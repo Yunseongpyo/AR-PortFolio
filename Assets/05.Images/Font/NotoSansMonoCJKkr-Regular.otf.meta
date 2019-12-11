@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: df619a96044ddbe478a67695203f6e50
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Noto Sans Mono CJK KR
+  fontNames:
+  - Noto Sans Mono CJK KR
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 25daaed89a6e1df4c93f5b0116195e88, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
