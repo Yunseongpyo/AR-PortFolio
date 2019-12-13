@@ -13,7 +13,7 @@ public class IntroCube : MonoBehaviour
     GameObject emptyGameObject;
 
     //메인큐브맵 오브젝트
-    public GameObject maincubeMap;
+    public AudioClip fallDownSound;
 
 
     public Transform tr;

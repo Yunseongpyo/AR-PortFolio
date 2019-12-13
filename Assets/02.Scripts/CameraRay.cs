@@ -25,6 +25,8 @@ public class CameraRay : MonoBehaviour
     //AliveCube material
     private Material alivecubeMat;
 
+    //시선볼경우
+    public bool seeOnOff;
     void Start()
     {
         tr = this.transform;
@@ -42,11 +44,10 @@ public class CameraRay : MonoBehaviour
 
 
         cameraRay = new Ray(tr.position, tr.forward);
-        Debug.DrawRay(cameraRay.origin, cameraRay.direction * 10.0f, Color.red);
 
+        WordAni();
         AliveCubeAni();
         PenguinAni();
-        WordAni();
 
     }
 
@@ -55,23 +56,26 @@ public class CameraRay : MonoBehaviour
         
         if (Physics.Raycast(cameraRay, out hit, 100.0f, 1 << 13))
         {
+            seeOnOff = true;
             hitWord.gameObject.GetComponent<WordAni>().repaetCheck = true;
             hitWord.transform.LookAt(tr);
             hitWord.transform.GetChild(2).gameObject.SetActive(true);
 
 
-            //hitWord.gameObject.GetComponent<BoxCollider>().enabled = false;
             StartCoroutine(hitWord.gameObject.GetComponent<WordAni>().AnimationWord());
             
         }
-        //벗어날 경우는 우선 임시적으로 큐브를 봤을 경우도 대체
        
+        //벗어날 경우는 우선 임시적으로 큐브를 봤을 경우도 대체
+
     }
 
     void PenguinAni()
     {
         if (Physics.Raycast(cameraRay, out hit, 100.0f, 1 << 12))
         {
+            seeOnOff = true;
+
             hitPenguin.transform.GetChild(0).gameObject.GetComponent<Animator>().SetBool("JUMP", true);
             hitPenguin.transform.GetChild(0).transform.LookAt(tr);
 
@@ -80,10 +84,12 @@ public class CameraRay : MonoBehaviour
         }
         else
         {
+            //seeOnOff = false;
+
             hitPenguin.transform.GetChild(0).gameObject.GetComponent<Animator>().SetBool("JUMP", false);
             hitPenguin.transform.GetChild(0).rotation = Quaternion.Euler(0,180,0);
             
-            //Penguin설명 UI 활성화
+            //Penguin설명 UI 비활성화
             hitPenguin.transform.GetChild(2).gameObject.SetActive(false);
 
         }
@@ -114,6 +120,8 @@ public class CameraRay : MonoBehaviour
             //Glow 효과
             alivecubeMat = hitAlive.gameObject.GetComponent<MeshRenderer>().material;
             alivecubeMat.SetVector("_GLOWCOLOR", new Color(0f, 105f, 190f, 0f) * 0.1f);
+            seeOnOff = true;
+            
         }
         else
         {
@@ -125,6 +133,7 @@ public class CameraRay : MonoBehaviour
 
             alivecubeMat = hitAlive.gameObject.GetComponent<MeshRenderer>().material;
             alivecubeMat.SetVector("_GLOWCOLOR", new Color(0f, 105f, 190f, 0f) * 0.01f);
+            seeOnOff = false;
 
         }
 

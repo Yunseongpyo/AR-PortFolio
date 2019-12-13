@@ -45,6 +45,8 @@ public class ARTapTopPlaceObject : MonoBehaviour
     private void Awake()
     {
         onoffCameraRay = arCamera.GetComponent<CameraRay>();
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+
 
     }
     private void Start()
@@ -72,6 +74,7 @@ public class ARTapTopPlaceObject : MonoBehaviour
             if (!visual.activeInHierarchy && ischeckClear == false)
             {
                 visual.SetActive(true);
+                arCamera.transform.GetChild(0).gameObject.SetActive(false);
             }
             if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began && ischeckClear == false)
             {
@@ -97,21 +100,30 @@ public class ARTapTopPlaceObject : MonoBehaviour
                 ray = arCamera.ScreenPointToRay(Input.GetTouch(0).position);
                 
 
-               if (Physics.Raycast(ray, out hitobj, 100.0f, 1 << 11) && aliveCubeVideoOnoff == false)
+               if (Physics.Raycast(ray, out hitobj, 100.0f, 1 << 17) && aliveCubeVideoOnoff == false)
                 {
-                    //설명UI끄기
-                    hitobj.transform.GetChild(1).gameObject.SetActive(false);
+                    
+                    GameObject parenthitObj = hitobj.transform.parent.gameObject.transform.parent.gameObject;
 
+                    //설명UI끄기
+                    parenthitObj.transform.parent.transform.GetChild(1).gameObject.SetActive(false);
+
+                    
                     destroyMap = Instantiate(cubemap, hitobj.transform.position + new Vector3(0,-0.5f,-1.0f), hitobj.transform.rotation);
                     //카메라 레이 끄기
                     onoffCameraRay.enabled = false;
-                    StartCoroutine(DelayVideoPlayer(hitobj));
+                    StartCoroutine(DelayVideoPlayer(parenthitObj.transform.parent.gameObject));
                     
                     aliveCubeVideoOnoff = !aliveCubeVideoOnoff;
                 }
-                else if (Physics.Raycast(ray, out hitobj, 100.0f, 1 << 11) && aliveCubeVideoOnoff == true)
+                else if (Physics.Raycast(ray, out hitobj, 100.0f, 1 << 17) && aliveCubeVideoOnoff == true)
                 {
-                    hitobj.transform.GetChild(0).gameObject.SetActive(false);
+                    GameObject parenthitObj = hitobj.transform.parent.gameObject.transform.parent.gameObject;
+
+                    parenthitObj.gameObject.SetActive(false);
+
+
+                    //hitobj.transform.GetChild(0).gameObject.SetActive(false);
 
                     GameObject temp = GameObject.Find("TEMP");
                     GameObject[] cubewall = GameObject.FindGameObjectsWithTag("CUBEWALL");
@@ -120,7 +132,8 @@ public class ARTapTopPlaceObject : MonoBehaviour
                         cubewall[i].GetComponent<Rigidbody>().useGravity = true;
                         cubewall[i].GetComponent<Rigidbody>().isKinematic = false;
                     }
-
+                    destroyMap.GetComponent<AudioSource>().clip = destroyMap.GetComponent<IntroCube>().fallDownSound;
+                    destroyMap.GetComponent<AudioSource>().Play();
                     Destroy(temp, 7.0f);
                     Destroy(destroyMap, 8.0f);
                     aliveCubeVideoOnoff = !aliveCubeVideoOnoff;
@@ -131,15 +144,15 @@ public class ARTapTopPlaceObject : MonoBehaviour
 
                 if (Physics.Raycast(ray, out hitobj, 100.0f, 1 << 15) && aliveCubeVideoOnoff == false)
                 {
-                    Debug.Log("워드월드");
+  
                     GameObject parenthitObj = hitobj.transform.parent.gameObject.transform.parent.gameObject;
                     
                     //파티클 켜기
                     wordExplode.SetActive(true);
 
                     parenthitObj.transform.parent.transform.GetChild(1).gameObject.SetActive(true);
-                    destroyMap = Instantiate(wordWorldmap);
-                    destroyMap.transform.localPosition = new Vector3(0, -0.3f, 0.554f);
+                    destroyMap = Instantiate(wordWorldmap, hitobj.transform.position + new Vector3(0, -0.3f, 0.554f), hitobj.transform.rotation);
+                    //destroyMap.transform.localPosition = new Vector3(0, -0.3f, 0.554f);
                     parenthitObj.SetActive(false);
 
                     onoffCameraRay.enabled = false;
@@ -154,35 +167,42 @@ public class ARTapTopPlaceObject : MonoBehaviour
 
                     //파티클 끄기
                     wordExplode.SetActive(false);
-                    Destroy(destroyMap);
+                    destroyMap.GetComponent<WordMapExplode>().enabled = true;
+                    Destroy(destroyMap,7.0f);
                     onoffCameraRay.enabled = true;
                     aliveCubeVideoOnoff = !aliveCubeVideoOnoff;
 
                 }
 
                 //ML-Agent
-                if (Physics.Raycast(ray, out hitobj, 100.0f, 1 << 12) && aliveCubeVideoOnoff == false)
+                if (Physics.Raycast(ray, out hitobj, 100.0f, 1 << 16) && aliveCubeVideoOnoff == false)
                 {
-                    Debug.Log("펭귄펭귄");
+                    GameObject parenthitObj = hitobj.transform.parent.gameObject.transform.parent.gameObject;
+                    parenthitObj.transform.parent.transform.GetChild(1).gameObject.SetActive(true);
+                    parenthitObj.SetActive(false);
+
+                    parenthitObj.transform.parent.transform.GetChild(3).gameObject.SetActive(true);
 
                     //설명UI 비활성화
-                    hitobj.transform.GetChild(2).gameObject.SetActive(false);
-                    //destroyMap = Instantiate(mlAgentmap);
-                    //destroyMap.transform.localPosition = new Vector3(-1.5f, -0.3f, 0);
-                    //destroyMap.transform.localRotation = arCamera.transform.rotation;
-                    hitobj.transform.GetChild(2).localRotation = arCamera.transform.rotation;
-                    hitobj.transform.GetChild(1).gameObject.SetActive(true);
-                    hitobj.transform.GetChild(3).gameObject.SetActive(true);
+                    //hitobj.transform.GetChild(2).gameObject.SetActive(false);
+                    
+                    //hitobj.transform.GetChild(2).localRotation = arCamera.transform.rotation;
+                    //hitobj.transform.GetChild(1).gameObject.SetActive(true);
 
                     onoffCameraRay.enabled = false;
                     aliveCubeVideoOnoff = !aliveCubeVideoOnoff;
 
                 }
-                else if (Physics.Raycast(ray, out hitobj, 100.0f, 1 << 12) && aliveCubeVideoOnoff == true)
+                else if (Physics.Raycast(ray, out hitobj, 100.0f, 1 << 16) && aliveCubeVideoOnoff == true)
                 {
+                    GameObject parenthitObj = hitobj.transform.parent.gameObject.transform.parent.gameObject;
+                    parenthitObj.transform.parent.transform.GetChild(1).gameObject.SetActive(false);
+                    
 
-                    hitobj.transform.GetChild(1).gameObject.SetActive(false);
-                    hitobj.transform.GetChild(3).gameObject.SetActive(false);
+                    parenthitObj.transform.parent.transform.GetChild(3).gameObject.SetActive(false);
+
+                    //hitobj.transform.GetChild(1).gameObject.SetActive(false);
+                    //hitobj.transform.GetChild(3).gameObject.SetActive(false);
 
                     //Destroy(destroyMap);
 
@@ -198,7 +218,7 @@ public class ARTapTopPlaceObject : MonoBehaviour
 
     }
     
-    IEnumerator DelayVideoPlayer(RaycastHit _hitobj)
+    IEnumerator DelayVideoPlayer(GameObject _hitobj)
     {
         yield return new WaitForSeconds(4.0f);
         _hitobj.transform.GetChild(0).gameObject.SetActive(true);

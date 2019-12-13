@@ -61,9 +61,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bec174c3ea5a5843afa888ebec98903, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maincubeMap: {fileID: 0}
+  fallDownSound: {fileID: 8300000, guid: 33b52d3b417962a49a43ccbcc5d79a6e, type: 3}
   tr: {fileID: 6767199698906826484}
-  cubesize: 0.3
+  cubesize: 0.4
 --- !u!82 &145297625
 AudioSource:
   m_ObjectHideFlags: 0

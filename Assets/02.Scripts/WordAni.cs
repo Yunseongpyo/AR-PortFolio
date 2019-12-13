@@ -12,6 +12,9 @@ public class WordAni : MonoBehaviour
     //기본위치
     private Transform firstObj;
 
+    //cameraraybool
+    public CameraRay camerarayCheck;
+
     public bool repaetCheck;
     void Start()
     {
@@ -43,6 +46,7 @@ public class WordAni : MonoBehaviour
         wordList[0].transform.localRotation = Quaternion.Euler(0, 0, 0);
         while (repaetCheck)
         {
+            //camerarayCheck.seeOnOff = true;
             wordList[wordlistCount].SetActive(false);
 
             if (wordlistCount == wordList.Count-1)
